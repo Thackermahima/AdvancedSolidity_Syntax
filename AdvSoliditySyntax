@@ -1,0 +1,196 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.7.0 <0.9.0;
+
+/*
+
+1.Mapping 
+1.1 memory vs storage - 2 Solidity storage locations
+
+Uint -> Fixed variables
+String -> Dynamic variables - it goes to memory Ram or heap
+- As like above address is fixed so it's store in the storage where we don't need to specify memory 
+and string is dynamic so we need to store it in memory  
+- If variable is declared as a global then we don't need to specify memory keyword so for ex string name;
+it will stay forever to the contract whereas in functions (string memory happy) it will only store in functions.
+it goes to the  ram whereas global variables goes to the hard disk.
+
+
+2.Enums 
+3.Structs 
+4.View and pure functions 
+5.Modifiers
+6.Event 
+7.Constructors 
+8. Inheritance
+9. How to transfer ETH from a smart contracts
+10. Calling external smart contracts.
+11. Import Statements
+12. Solidity Libraries
+
+*/
+contract Mapping{
+    //mappping 
+    //Similar to object. Kinda similar to array where it stores bunch of values but it also provides keys to access the value.
+
+    //string public moods;
+    mapping(address => string) public moods;
+    //access someone's mood value
+    //moods[0x00110..] => string
+    function getMood( address user) public view returns(string memory){
+    return moods[user];
+    }
+    function setMood(string memory mood) public {
+        moods[msg.sender] = mood;
+    }
+     }
+     contract  Enums {
+         //Enum is a short form of “Enumerators” or “Enumerable”.
+         //Human readable types for a set values.
+         //Strings are not the best way to represent status.
+         //cause:- 1) Dynamic length, expensive for gas.
+         // 2) Have to validate each string input to check its possible option.
+
+         // Alternate approach :- represent status using number.
+         // 0)TODO
+         // 1) PROGRESS
+         // 2)DONE
+         // 3)CANCELED
+
+         enum Status {
+             TODO,
+             IN_PROGRESS,
+             DONE,
+             CANCELED
+         }
+         //Id => Status 
+         mapping(uint256 => Status) todos;
+         function addTask( uint256 id) public{
+             todos[id] = Status.TODO;
+         }
+        //  function UpdateStatus(uint256 id, Status newStatus) public{
+        //      todos[id] = newStatus;
+        //  }
+        function markTaskInProgress(uint256 id) public {
+            todos[id] = Status.IN_PROGRESS;
+        }
+         function getStatus(uint256 id) public view returns(Status){
+             return todos[id];
+         }
+
+     }
+
+     contract Struct {
+         //A way to hold a bunch of releted information toghether.
+          enum Status {
+             TODO,
+             IN_PROGRESS,
+             DONE,
+             CANCELED
+
+          }
+          struct Task {
+              string description;
+              string title;
+              Status status;
+          }
+
+          mapping(uint256 => Task) tasks;
+
+          function deleteeTask(uint256 id) public {
+          delete tasks[id];
+          }
+          function editTaskTitle(uint256 id, string memory newTitle) public {
+              tasks[id].title = newTitle;
+          }
+
+          function addTask(uint256 id, string memory description, string memory title) public{
+              //Mehod - 1
+            //   tasks[id] = Task(description,title,Status.TODO); // We have to maintain order here.
+              //Method - 2
+              tasks[id] = Task({
+                  description : description,
+                  title : title,
+                  status : Status.TODO
+              });
+              //Methods - 3 
+
+            //   Task memory task;
+            //   task.title = title;
+            //   task.description = description;
+            //   task.status = Status.TODO;
+            //   tasks[id] = task;
+
+          }
+     }
+
+     contract ViewAndPureFunction {
+         //3 kinds of keyword to indicate side-effects of a function. 
+         //Side - effect meaning :- something that changes the value of a variable beyoned the scope.
+         //1st  - No keyword at all
+         //2nd  - View keyword 
+         //3rd -  Pure functions.
+
+         //View functions :- Read from the state but does not write to state. It's gasFree. 
+         //It means it does not cost any gas - same goes with pure functions
+         //Pure function - Does not read or write to state.
+         //Example is given below 
+         uint256 y;
+         function gety() public view returns(uint){
+             return y;
+         }
+         function addSum(uint256 a, uint256 b) public pure returns(uint){
+             return a+b;
+         }
+
+
+     }
+          contract Modifiers{
+
+           /*
+           Modifiers are the pieces of code that can be run
+           before or after any other function call 
+           - it is used for restricting access of the function call
+           - Validating certain input of certain parameters .
+           - Prevent certain types of attack( Reentrancy attack ).
+
+           */
+           address owner;
+           modifier onlyOwner(){
+               //If you want to run rest of the code first so you should 
+               //write _; before the require statement so require will run at last.
+
+               require(msg.sender == owner,"Unauthorized");
+               _; //run rest of the code in middle
+               //_; It means run the rest of the code here, if _; is set after require, it will run rest of the code last so 
+               //it will run require statement first.
+               require(true, "something");
+           }
+           function some1() public onlyOwner{
+
+           }
+           function some2() public onlyOwner{
+               
+           }
+           function some3() public onlyOwner{
+               
+           }
+
+           }
+
+           contract InheritanceA{
+               /* 
+               What is inheritance?
+               Inheritance is the that one contract can inheritance all the attributes(Object)and Method
+               (functions) in any other contracts. 
+               In solidity, we perform inheritance using this keyword.
+               1) Solidity supports multiple inheritance so your contract can inherit more than one contracts
+               2) A child contract can OVERRIDE a parent contract's function uing the OVERRIDE KEYWORD.
+               3) Only marked as a virtual can be overidden by the function so other functions
+               CANNOT  be overidden by the child contracts.
+               4) ORDER OF INHERITANCE MATTERS.
+                
+
+               
+               
+               */
+           }
