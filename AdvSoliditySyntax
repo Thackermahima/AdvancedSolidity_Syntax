@@ -185,12 +185,75 @@ contract Mapping{
                In solidity, we perform inheritance using this keyword.
                1) Solidity supports multiple inheritance so your contract can inherit more than one contracts
                2) A child contract can OVERRIDE a parent contract's function uing the OVERRIDE KEYWORD.
-               3) Only marked as a virtual can be overidden by the function so other functions
+               3) Only marked as a virtual functions in parent can be overidden by the child contract so other functions
                CANNOT  be overidden by the child contracts.
                4) ORDER OF INHERITANCE MATTERS.
-                
+
 
                
                
                */
            }
+       contract ETHSender{
+           //.call method
+           /* 
+           Mirror takes the in some ETH and sends it back to the user
+           msg.sender is the person that we are getting ETH from, 
+           also the person we are send back to.
+           msg.value - It's the ETH that amount of the ETH we receive and amount we sent back.
+
+
+           
+           */
+           function mirror() public payable{
+               address payable target = payable(msg.sender);
+               uint256 amount = msg.value;
+              (bool success,) = target.call{value: amount}("");
+              require(success,"FAILURE");
+            
+           }
+       }
+
+       library SafeMath{
+           function add(uint x, uint y) internal pure returns(uint){
+               uint z = x + y;
+               require(z>=x,"Overflow occured");
+               return z;
+           }
+       }
+       contract Libraries{
+           //There are 3 top-level construct in solidity 
+           /* 
+            1. Interface 
+            2. Contract 
+            3.library
+            What is solidity library 
+            - Typically used to add some helper functions to your contracts
+            - They cananot contain any state
+             1) You cannot have any state 
+             2) You cannot have any mapping/arrays/structs
+             3) All you can do it take some functions and take some input and 
+             return some output.
+
+
+           */
+           function testAddition(uint x, uint y) public pure returns(uint){
+               return SafeMath.add(x,y);
+
+           }
+            
+       }
+       //Integer Overflow - uint cannot store values more than 2^8 - 1 so 256 - 1 = 255 so 0 to 255
+
+       contract callExternalSM {
+           /*
+           An interface is a kind of like a ABI to a contract.
+           It defines function declarations
+           1) Name of the present contract 
+           2)What are the input values 
+           3)What is the return value 
+           4)What is the visibility 
+           5) What is the mutabiity ( View, pure, noting )
+
+           */
+       }
