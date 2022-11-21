@@ -244,7 +244,9 @@ contract Mapping{
             
        }
        //Integer Overflow - uint cannot store values more than 2^8 - 1 so 256 - 1 = 255 so 0 to 255
-
+interface MinimalERC20{
+function balanceOf(address account) external view returns(uint256);
+}
        contract callExternalSM {
            /*
            An interface is a kind of like a ABI to a contract.
@@ -256,4 +258,35 @@ contract Mapping{
            5) What is the mutabiity ( View, pure, noting )
 
            */
+           MinimalERC20 externalContracts;
+            constructor(address someERC20Contracts){
+               externalContracts = MinimalERC20(someERC20Contracts);
+            }
+           function checkBalance() public view{
+               //1.Check if msg.sender has any ERC20 token contracts
+               //2.require that balance is greater than 0 otherwise failed the transaction.
+            uint balance = externalContracts.balanceOf(msg.sender);
+            require(balance > 0,"You don't have enough tokens");
+
+           }
+       }
+
+       contract Events{
+           /*
+           What are the Event?
+           -> Events are the logs on the ethereum blockchain.
+           ->you can use events to log information on th blockchain and 
+           kind of for a poof of history that something happened at a
+           certain block.
+
+           Events have:
+           1) name
+           2)arguments that you want to log
+
+           */
+           event TestFunctionCalled(address sender, string message);
+           function test() public {
+               emit TestFunctionCalled(msg.sender, "Someone called test()");
+           }
+
        }
